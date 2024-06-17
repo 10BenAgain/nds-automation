@@ -2,6 +2,7 @@
 
 #define LOAD_INTO_GAME_MS 2680
 #define WAIT_FOR_SAV_MENU 3950
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
 void fossilSeqFrlg() {
@@ -196,7 +197,6 @@ void teachyTV(unsigned long timer) {
   if (waitTime < 0) 
     return
     
-  Serial.println(waitTime);
   delay(waitTime);
   openPin(B_PRESS);
   delay(1000);
@@ -210,12 +210,12 @@ void frlgLoop(unsigned long *seq) {
 
   unsigned long startTimer = micros();
   Serial.println(F("Waiting thru intro timer..."));
-    openPin(A_PRESS);
-    delay(seq[2]);
+  openPin(A_PRESS);
+  delay(seq[2]);
 
   Serial.println(F("Intro complete..."));
-    digitalWrite(seq[5], HIGH);
-    delay(WAIT_FOR_SAV_MENU);
+  digitalWrite(seq[5], HIGH);
+  delay(WAIT_FOR_SAV_MENU);
 
   if (seq[1]){
     Serial.println(F("Select released...")); 
@@ -228,10 +228,12 @@ void frlgLoop(unsigned long *seq) {
   delay(LOAD_INTO_GAME_MS);
   openPin(B_PRESS);
   delay(LOAD_INTO_GAME_MS);
+  Serial.println(F("Loaded into game.."));
 
-  Serial.println(F("Loaded into game..."));
-  if (seq[6] > 0)
+  if (seq[6] > 0) {
+    Serial.println("Beginning TV sequence..");
     teachyTV(seq[6]);
+  }
   
   if (seq[4] != 0){
     Serial.print(F("Mode is not NULL: 0x"));

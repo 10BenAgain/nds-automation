@@ -11,9 +11,8 @@ void clearCharArray(char *pArr, int len);
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  for (int i = 2; i < 14; i++) {
-    pinMode(i, OUTPUT);
-  }
+  DDRD = DDRD | B11111100;
+  DDRB = DDRB | B00111111;
 }
 
 void loop() {
