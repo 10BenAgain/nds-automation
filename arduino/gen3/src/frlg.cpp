@@ -4,6 +4,106 @@
 #define WAIT_FOR_SAV_MENU 3950
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
+static Settings CurrentSettings = { 0, 0 };
+
+void
+saveTheGame() {
+  ButtonDelay Save[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {1000, A_PRESS},
+    {800, A_PRESS},
+    {1000, A_PRESS},
+    {4200, B_PRESS}
+  };
+  int length = ARRAY_SIZE(Save);
+  processButtonDelay(Save, length);
+}
+
+void
+openSettings() {
+  ButtonDelay Settings[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {1500, A_PRESS}
+  };
+  int length = ARRAY_SIZE(Settings);
+  processButtonDelay(Settings, length);
+}
+
+void
+switchAudioMode() {
+  ButtonDelay Audio[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, LEFT_PRESS},
+    {1200, B_PRESS},
+    {200, B_PRESS}
+  };
+  int length = ARRAY_SIZE(Audio);
+  processButtonDelay(Audio, length);
+  
+  if (CurrentSettings.audio == 0) 
+    CurrentSettings.audio++;
+  else 
+    CurrentSettings.audio = 0;
+  saveTheGame();
+}
+
+void 
+switchButtonMode(unsigned int mode) {
+  ButtonDelay Audio[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS}
+  };
+  int length = ARRAY_SIZE(Audio);
+  processButtonDelay(Audio, length);
+
+  switch (mode)
+  {
+  case 0: // L=A
+    if (CurrentSettings.shoulder == 1) 
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 2) 
+      openPin(RIGHT_PRESS);
+    break;
+  case 1: // HELP
+    if (CurrentSettings.shoulder == 0)
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 2)
+      openPin(RIGHT_PRESS);
+    break;
+  case 2: // LR
+    if (CurrentSettings.shoulder == 0)
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 1)
+      openPin(RIGHT_PRESS);
+    break;
+  default:
+    break;
+  }
+  CurrentSettings.shoulder = mode;
+  openPin(B_PRESS);
+  waitMicroseconds(1500);
+  openPin(B_PRESS);
+  waitMicroseconds(800);
+  saveTheGame();
+}
+
+
 void 
 fossilSeqFrlg() {
   ButtonDelay FOSSIL_SEQ[] = {

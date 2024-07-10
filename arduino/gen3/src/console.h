@@ -15,6 +15,11 @@
 #include <Arduino.h>
 
 typedef struct {
+  unsigned int audio;
+  unsigned int shoulder;
+} Settings;
+
+typedef struct {
   unsigned int delay;
   unsigned int button;
 } ButtonDelay;
