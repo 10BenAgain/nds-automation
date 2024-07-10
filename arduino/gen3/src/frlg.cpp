@@ -529,7 +529,22 @@ seedCheckerWithCustomSave(unsigned long *seq) {
   Serial.println(F("Console rebooted..."));
   loopTimer = loopTimer ? 0 : loopTimer;
 
+  // Button, Select, Intro Timer
   introLoop(seq[5], seq[1], seq[2]);
   waitMilliseconds(500);
+  
+  // Audio Settings
+  if (seq[3] != CurrentSettings.audio) {
+    openSettings();
+    switchAudioMode();
+    waitMicroseconds(1000);
+  }
+  // Shoulder button settings
+  if (seq[4] != CurrentSettings.shoulder) {
+    openSettings();
+    switchButtonMode(seq[4]);
+    waitMicroseconds(1000);
+  }
+  
   openPin(A_PRESS);
 }

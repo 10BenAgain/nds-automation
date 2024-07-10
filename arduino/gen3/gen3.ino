@@ -61,6 +61,14 @@ void loop() {
         seedCheckerWithGrabACE(instructions);
         break;
       case 3:
+      /*
+        1 = Select Held
+        2 = Intro Timer,
+        3 = Audio Setting
+        4 = Shoulder button setting
+        5 = Button
+        6 = Unused
+      */
         Serial.println(F("FRLG Custom Seed Checker"));
         seedCheckerWithCustomSave(instructions);
         break;
