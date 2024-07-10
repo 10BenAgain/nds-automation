@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 void frlgLoop(unsigned long *seq);
-void seedChecker(unsigned long *seq);
+void seedCheckerWithGrabACE(unsigned long *seq);
+void seedCheckerWithCustomSave(unsigned long *seq);
 
 #endif

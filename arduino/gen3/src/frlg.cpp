@@ -165,6 +165,22 @@ porygonSeq() {
   processButtonDelay(PORYGON_GC_SEQ, length);
 }
 
+void catchWildPokemonMasterBall() {
+  ButtonDelay THROW_BALL[] = {
+    {3000, A_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {1200, RIGHT_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {5000, A_PRESS},
+    {800, B_PRESS}
+  };
+  int length = ARRAY_SIZE(ButtonDelay);
+  processButtonDelay(THROW_BALL, length);
+}
+
 /*
   * This assumes that you are standing in front of a PC
   * And that when you open Bill's PC to *move* Pokemon
@@ -183,6 +199,14 @@ performGrabACE() {
     {200, A_PRESS},
     {2850, A_PRESS},
     {200, A_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, LEFT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
     {800, RIGHT_PRESS},
     {800, A_PRESS},
     {800, A_PRESS},
@@ -215,6 +239,28 @@ checkTrainerCard() {
   };
   int length = ARRAY_SIZE(CHECK_TID);
   processButtonDelay(CHECK_TID, length);
+}
+
+/*
+  * Function performs opening the Teachy TV
+  * and then waiting inside the TV screen for a specified amount of time
+  * Assumes that the TV is registered key item
+*/
+void 
+teachyTV(unsigned long timer) {
+  unsigned long startTimer = millis();
+  openPin(SELECT_PRESS);
+  waitMicroseconds(MS_UL(1200));
+  unsigned long endTimer = millis();
+  unsigned long waitTime = timer - (endTimer - startTimer);
+
+  if (waitTime < 0) 
+    return;
+    
+  Serial.println(waitTime);
+  delay(waitTime);
+  openPin(B_PRESS);
+  waitMicroseconds(MS_UL(1000));
 }
 
 typedef void (*SeqPtr)();
@@ -311,28 +357,6 @@ introLoop(int button, int select, unsigned long timer) {
 }
 
 /*
-  * Function performs opening the Teachy TV
-  * and then waiting inside the TV screen for a specified amount of time
-  * Assumes that the TV is registered key item
-*/
-void 
-teachyTV(unsigned long timer) {
-  unsigned long startTimer = millis();
-  openPin(SELECT_PRESS);
-  waitMicroseconds(MS_UL(1200));
-  unsigned long endTimer = millis();
-  unsigned long waitTime = timer - (endTimer - startTimer);
-
-  if (waitTime < 0) 
-    return;
-    
-  Serial.println(waitTime);
-  delay(waitTime);
-  openPin(B_PRESS);
-  waitMicroseconds(MS_UL(1000));
-}
-
-/*
   * Function for preforming RNG sequence
   * Based on user input, a sequence for getting into an encounter is seleceted
   * Checks if the total time is shorter than possible and continues to wait if not
@@ -378,7 +402,7 @@ frlgLoop(unsigned long *seq) {
   * Reboots the console to reset the seed and start again
 */
 void
-seedChecker(unsigned long *seq) {
+seedCheckerWithGrabACE(unsigned long *seq) {
   Serial.println(F("Rebooting console.."));
   getToDSMenuFromReboot();
   Serial.println(F("Console rebooted..."));
@@ -390,6 +414,22 @@ seedChecker(unsigned long *seq) {
   waitMilliseconds(500);
 
   checkTrainerCard();
+}
 
-  waitMilliseconds(10000);
+/*
+  * This assumes we are using the special save file that
+  * Prints out the initial seed when player speaks with
+  * Rival's sister. This simply reboots, performs the timer sequence,
+  * Then starts the conversation by pressing A
+*/
+void
+seedCheckerWithCustomSave(unsigned long *seq) {
+  Serial.println(F("Rebooting console.."));
+  getToDSMenuFromReboot();
+  Serial.println(F("Console rebooted..."));
+  loopTimer = loopTimer ? 0 : loopTimer;
+
+  introLoop(seq[5], seq[1], seq[2]);
+  waitMilliseconds(500);
+  openPin(A_PRESS);
 }
