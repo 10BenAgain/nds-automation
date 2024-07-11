@@ -6,19 +6,22 @@
 
 static Settings CurrentSettings = { 0, 0 };
 
+
+/*
+  Assumes we are using the special save file,
+  and need to go one up from settings. 
+  3+0+35000+1+0+2+0+?
+*/
 void
 saveTheGame() {
   ButtonDelay Save[] = {
     {0, START_PRESS},
-    {200, DOWN_PRESS},
-    {200, DOWN_PRESS},
-    {200, DOWN_PRESS},
-    {200, DOWN_PRESS},
-    {200, DOWN_PRESS},
+    {200, UP_PRESS},
     {1000, A_PRESS},
     {800, A_PRESS},
     {1000, A_PRESS},
-    {4200, B_PRESS}
+    {5800, B_PRESS},
+    {500, B_PRESS}
   };
   int length = ARRAY_SIZE(Save);
   processButtonDelay(Save, length);
@@ -28,8 +31,6 @@ void
 openSettings() {
   ButtonDelay Settings[] = {
     {0, START_PRESS},
-    {200, DOWN_PRESS},
-    {200, DOWN_PRESS},
     {200, DOWN_PRESS},
     {200, DOWN_PRESS},
     {200, DOWN_PRESS},
@@ -47,8 +48,8 @@ switchAudioMode() {
     {200, DOWN_PRESS},
     {200, DOWN_PRESS},
     {200, LEFT_PRESS},
-    {1200, B_PRESS},
-    {200, B_PRESS}
+    {1600, B_PRESS},
+    {3600, B_PRESS}
   };
   int length = ARRAY_SIZE(Audio);
   processButtonDelay(Audio, length);
@@ -99,10 +100,9 @@ switchButtonMode(unsigned int mode) {
   openPin(B_PRESS);
   waitMicroseconds(1500);
   openPin(B_PRESS);
-  waitMicroseconds(800);
+  waitMicroseconds(3600);
   saveTheGame();
 }
-
 
 void 
 fossilSeqFrlg() {
@@ -406,7 +406,7 @@ static unsigned long loopTimer = 0;
 void 
 getToDSMenuFromReboot() {
   rebootConsole();
-  waitMilliseconds(10000);
+  waitMilliseconds(8000);
   openPin(A_PRESS);
   waitMilliseconds(3000);
 }
@@ -419,7 +419,7 @@ getToDSMenuFromReboot() {
 void 
 menuToGame() {
   Serial.println(F("Selecting save file..."));
-  waitMicroseconds(MS_UL(60));
+  waitMicroseconds(MS_UL(100));
   openPin(A_PRESS);
   Serial.println(F("Skipping recap..."));
   waitMicroseconds(MS_UL(LOAD_INTO_GAME_MS));
@@ -536,14 +536,16 @@ seedCheckerWithCustomSave(unsigned long *seq) {
   // Audio Settings
   if (seq[3] != CurrentSettings.audio) {
     openSettings();
+    waitMilliseconds(1800);
     switchAudioMode();
-    waitMicroseconds(1000);
+    waitMilliseconds(1000);
   }
   // Shoulder button settings
   if (seq[4] != CurrentSettings.shoulder) {
     openSettings();
+    waitMilliseconds(1800);
     switchButtonMode(seq[4]);
-    waitMicroseconds(1000);
+    waitMilliseconds(1000);
   }
   
   openPin(A_PRESS);

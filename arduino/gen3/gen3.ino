@@ -35,7 +35,7 @@ void loop() {
       instructions[stepCount] = atol(stepBlock);
 
       Serial.print(stepCount + 1);
-      Serial.print(F(": "));
+      Serial.print(F(", "));
       Serial.print(F("Step value: "));
       Serial.println(atol(stepBlock));
       
@@ -60,10 +60,10 @@ void loop() {
         Serial.println(F("FRLG ACE Seed Checker"));
         seedCheckerWithGrabACE(instructions);
         break;
-      case 3:
+      case 3:                                                                                                                                                                                                                                                                                                                                                     
       /*
         1 = Select Held
-        2 = Intro Timer,
+        2 = Intro Timer
         3 = Audio Setting
         4 = Shoulder button setting
         5 = Button
