@@ -29,7 +29,7 @@ def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
     return logger
 
 
-def get_timer_button_settings() -> [int, int]:
+def get_timer_button_settings() -> list[int]:
     with open("settings.json") as s:
         settings = json.load(s)
         return [settings["start_point"], settings["button"]]
