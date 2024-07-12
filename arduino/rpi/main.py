@@ -4,6 +4,7 @@ import serial
 import logging
 import instructor
 import constants
+import json
 
 
 def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
@@ -26,6 +27,12 @@ def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
     logger.addHandler(file_handler)
 
     return logger
+
+
+def get_timer_button_settings() -> [int, int]:
+    with open("settings.json") as s:
+        settings = json.load(s)
+        return [settings["start_point"], settings["button"]]
 
 
 def write_to_device(instructions: list[int]) -> None:
@@ -72,7 +79,10 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
         return
 
     logger.info("Beginning seed collection loop...")
+    count = 0
     while storage > 0:
+        count += 1
+        logger.info(f"Record count: {count}")
         intro = data[2]
         logger.info(f"Current intro timer: {intro}")
         write_to_device(data)
@@ -84,7 +94,8 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
 
 
 def main() -> None:
-    ins = instructor.SeedCheckerBuilder(timer=35000, button=13)
+    settings = get_timer_button_settings()
+    ins = instructor.SeedCheckerBuilder(timer=settings[0], button=settings[1])
     perform_seed_loop(ins)
 
 
