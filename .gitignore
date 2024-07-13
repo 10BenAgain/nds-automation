@@ -409,6 +409,7 @@ env/
 venv/
 dist/
 build/
+logs/
 main.spec
 
 # Pycharm files
