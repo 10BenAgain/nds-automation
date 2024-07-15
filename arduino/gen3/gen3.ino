@@ -79,6 +79,7 @@ void loop() {
     clearLongArray(instructions, MAX_STEPS);
     stepCount = 0;
     Serial.println(F("Done."));
+    Serial.flush();
   }
 }
 
