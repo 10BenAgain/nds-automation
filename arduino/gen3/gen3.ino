@@ -4,7 +4,8 @@
 
 #define MAX_STEPS 7
 #define MAX_STEP_LENGTH 8
-#define BAUD_RATE 9600
+
+const unsigned long BAUD_RATE = 9600;
 
 void clearLongArray(unsigned long *pArr, int len);
 void clearCharArray(char *pArr, int len);
