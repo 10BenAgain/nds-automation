@@ -26,6 +26,13 @@ def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
 
     logger.addHandler(file_handler)
 
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+    logger.addHandler(console_handler)
+
     return logger
 
 
