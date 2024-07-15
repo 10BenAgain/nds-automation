@@ -73,6 +73,7 @@ switchButtonMode(unsigned int mode) {
   int length = ARRAY_SIZE(Audio);
   processButtonDelay(Audio, length);
 
+  waitMilliseconds(800);
   switch (mode)
   {
   case 0: // L=A
@@ -97,10 +98,11 @@ switchButtonMode(unsigned int mode) {
     break;
   }
   CurrentSettings.shoulder = mode;
+  waitMilliseconds(800);
   openPin(B_PRESS);
-  waitMicroseconds(1500);
+  waitMilliseconds(1800);
   openPin(B_PRESS);
-  waitMicroseconds(3600);
+  waitMilliseconds(3600);
   saveTheGame();
 }
 
@@ -531,7 +533,7 @@ seedCheckerWithCustomSave(unsigned long *seq) {
 
   // Button, Select, Intro Timer
   introLoop(seq[5], seq[1], seq[2]);
-  waitMilliseconds(500);
+  waitMilliseconds(1000);
   
   // Audio Settings
   if (seq[3] != CurrentSettings.audio) {
