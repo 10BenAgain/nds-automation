@@ -1,13 +1,18 @@
+''' Script to automatically send incremented data to Arduino for farming seeds in FRLG'''
+
 import os
 import time
-import serial
+import json
 import logging
+
+import serial
 import instructor
 import constants
-import json
+
 
 
 def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
+    '''Setup a logger that logs both to files in a 'logs' directory and to the terminal'''
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
@@ -37,12 +42,14 @@ def init_logs(log_dir="logs", base_file="logs") -> logging.Logger:
 
 
 def get_timer_button_settings() -> list[int]:
-    with open("settings.json") as s:
+    '''Gets the start point timer and button from config'''
+    with open("settings.json", encoding='utf-8') as s:
         settings = json.load(s)
         return [settings["start_point"], settings["button"]]
 
 
 def write_to_device(instructions: list[int]) -> None:
+    '''Tries to write the required data to the serial port'''
     try:
         with serial.Serial(bytesize=8,
                            baudrate=constants.rate,
@@ -58,49 +65,54 @@ def write_to_device(instructions: list[int]) -> None:
         raise e
 
 
-def print_instructions(instructions: list[int]) -> None:
-    for i in instructions:
-        print(i)
-
-
 def check_send_data(data: list[int]) -> bool:
+    '''Checks if the Instructor object returns with default values'''
     # Check if the last value of the seed checker instruction is
     # Set to default value of 1
     if data[len(data) - 1]:
         return True
+    return False
 
 
 def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storage=None) -> None:
+    '''
+    Creates logger object then checks params for function and sets defualts
+    While the special save still has storage, send the data from instructor
+    Object to the arduino then increment the intro timer by the desired amount.
+    While we wait for the loop to complete, time.sleep() is called to time the
+    Sequence correctly. The sleep time is incremented accordingly
+    '''
     logger = init_logs()
     data = ins.return_instructions()
     if storage is None:
         storage = constants.max_storage
-    logger.info(f"Storage set to {storage} seeds")
+    logger.info("Storage set to %d seeds", storage)
 
     if increment is None:
         increment = 8
-    logger.info(f"Incrementing intro timer by {increment}")
+    logger.info("Incrementing intro timer by %d", increment)
 
     if check_send_data(data):
-        logger.critical(f"Error in seed data! Default value found")
+        logger.critical("Error in seed data! Default value found")
         return
 
     logger.info("Beginning seed collection loop...")
     count = 0
     while storage > 0:
         count += 1
-        logger.info(f"Record count: {count}")
+        logger.info("Record count: %d", count)
         intro = data[2]
-        logger.info(f"Current intro timer: {intro}")
+        logger.info("Current intro timer: %d", intro)
         write_to_device(data)
         sec = (intro + constants.reboot_time) / 1000
-        logger.info(f"Waiting for seed write: {sec} seconds")
+        logger.info("Waiting for seed write: %f seconds", sec)
         time.sleep(sec)
         ins.increment_timer(increment)
         storage -= 1
 
 
 def main() -> None:
+    '''Gets the settings, creates a new instructor object and starts the loop'''
     settings = get_timer_button_settings()
     ins = instructor.SeedCheckerBuilder(timer=settings[0], button=settings[1])
     perform_seed_loop(ins)
