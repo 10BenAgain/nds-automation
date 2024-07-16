@@ -6,11 +6,9 @@
 
 static Settings CurrentSettings = { 0, 0 };
 
-
 /*
   Assumes we are using the special save file,
   and need to go one up from settings. 
-  3+0+35000+1+0+2+0+?
 */
 void
 saveTheGame() {
