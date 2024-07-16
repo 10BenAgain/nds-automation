@@ -1,7 +1,7 @@
+"""Series of commonly used constants that correspond to Arduino values"""
 import json
 
-
-with open("settings.json") as s:
+with open("settings.json", encoding='utf-8') as s:
     settings = json.load(s)
     start = settings["start"]
     end = settings["end"]
@@ -10,7 +10,6 @@ with open("settings.json") as s:
     port = settings["port"]
     rate = settings["rate"]
 
-
 instruct_modes: dict[str, int] = {
     "RLG RNG": 0,
     "RSE RNG": 1,
@@ -18,7 +17,7 @@ instruct_modes: dict[str, int] = {
     "Custom Seed Checker": 3
 }
 
-button_map: dict[str, int]  = {
+button_map: dict[str, int] = {
     "A": 2,
     "B": 3,
     "X": 4,
@@ -34,12 +33,12 @@ button_map: dict[str, int]  = {
     "Power": 14
 }
 
-audio_mode: dict[str, int]  = {
+audio_mode: dict[str, int] = {
     "Mono": 0,
     "Stereo": 1
 }
 
-shoulder_mode: dict[str, int]  = {
+shoulder_mode: dict[str, int] = {
     "L=A": 0,
     "HELP": 1,
     "LR": 2
