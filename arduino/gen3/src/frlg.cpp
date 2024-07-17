@@ -4,6 +4,106 @@
 #define WAIT_FOR_SAV_MENU 3950
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
+static Settings CurrentSettings = { 0, 0 };
+
+/*
+  Assumes we are using the special save file,
+  and need to go one up from settings. 
+*/
+void
+saveTheGame() {
+  ButtonDelay Save[] = {
+    {0, START_PRESS},
+    {200, UP_PRESS},
+    {1000, A_PRESS},
+    {800, A_PRESS},
+    {1000, A_PRESS},
+    {5800, B_PRESS},
+    {500, B_PRESS}
+  };
+  int length = ARRAY_SIZE(Save);
+  processButtonDelay(Save, length);
+}
+
+void
+openSettings() {
+  ButtonDelay Settings[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {1500, A_PRESS}
+  };
+  int length = ARRAY_SIZE(Settings);
+  processButtonDelay(Settings, length);
+}
+
+void
+switchAudioMode() {
+  ButtonDelay Audio[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, LEFT_PRESS},
+    {1600, B_PRESS},
+    {3600, B_PRESS}
+  };
+  int length = ARRAY_SIZE(Audio);
+  processButtonDelay(Audio, length);
+  
+  if (CurrentSettings.audio == 0) 
+    CurrentSettings.audio++;
+  else 
+    CurrentSettings.audio = 0;
+  saveTheGame();
+}
+
+void 
+switchButtonMode(unsigned int mode) {
+  ButtonDelay Audio[] = {
+    {0, START_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS},
+    {200, DOWN_PRESS}
+  };
+  int length = ARRAY_SIZE(Audio);
+  processButtonDelay(Audio, length);
+
+  waitMilliseconds(800);
+  switch (mode)
+  {
+  case 0: // L=A
+    if (CurrentSettings.shoulder == 1) 
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 2) 
+      openPin(RIGHT_PRESS);
+    break;
+  case 1: // HELP
+    if (CurrentSettings.shoulder == 0)
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 2)
+      openPin(RIGHT_PRESS);
+    break;
+  case 2: // LR
+    if (CurrentSettings.shoulder == 0)
+      openPin(LEFT_PRESS);
+    else if (CurrentSettings.shoulder == 1)
+      openPin(RIGHT_PRESS);
+    break;
+  default:
+    break;
+  }
+  CurrentSettings.shoulder = mode;
+  waitMilliseconds(800);
+  openPin(B_PRESS);
+  waitMilliseconds(1800);
+  openPin(B_PRESS);
+  waitMilliseconds(3600);
+  saveTheGame();
+}
+
 void 
 fossilSeqFrlg() {
   ButtonDelay FOSSIL_SEQ[] = {
@@ -165,6 +265,22 @@ porygonSeq() {
   processButtonDelay(PORYGON_GC_SEQ, length);
 }
 
+void catchWildPokemonMasterBall() {
+  ButtonDelay THROW_BALL[] = {
+    {3000, A_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {1200, RIGHT_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {5000, A_PRESS},
+    {800, B_PRESS}
+  };
+  int length = ARRAY_SIZE(ButtonDelay);
+  processButtonDelay(THROW_BALL, length);
+}
+
 /*
   * This assumes that you are standing in front of a PC
   * And that when you open Bill's PC to *move* Pokemon
@@ -183,6 +299,14 @@ performGrabACE() {
     {200, A_PRESS},
     {2850, A_PRESS},
     {200, A_PRESS},
+    {800, RIGHT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, LEFT_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
+    {800, A_PRESS},
     {800, RIGHT_PRESS},
     {800, A_PRESS},
     {800, A_PRESS},
@@ -215,6 +339,28 @@ checkTrainerCard() {
   };
   int length = ARRAY_SIZE(CHECK_TID);
   processButtonDelay(CHECK_TID, length);
+}
+
+/*
+  * Function performs opening the Teachy TV
+  * and then waiting inside the TV screen for a specified amount of time
+  * Assumes that the TV is registered key item
+*/
+void 
+teachyTV(unsigned long timer) {
+  unsigned long startTimer = millis();
+  openPin(SELECT_PRESS);
+  waitMicroseconds(MS_UL(1200));
+  unsigned long endTimer = millis();
+  unsigned long waitTime = timer - (endTimer - startTimer);
+
+  if (waitTime < 0) 
+    return;
+    
+  Serial.println(waitTime);
+  delay(waitTime);
+  openPin(B_PRESS);
+  waitMicroseconds(MS_UL(1000));
 }
 
 typedef void (*SeqPtr)();
@@ -260,7 +406,7 @@ static unsigned long loopTimer = 0;
 void 
 getToDSMenuFromReboot() {
   rebootConsole();
-  waitMilliseconds(10000);
+  waitMilliseconds(8000);
   openPin(A_PRESS);
   waitMilliseconds(3000);
 }
@@ -273,7 +419,7 @@ getToDSMenuFromReboot() {
 void 
 menuToGame() {
   Serial.println(F("Selecting save file..."));
-  waitMicroseconds(MS_UL(60));
+  waitMicroseconds(MS_UL(100));
   openPin(A_PRESS);
   Serial.println(F("Skipping recap..."));
   waitMicroseconds(MS_UL(LOAD_INTO_GAME_MS));
@@ -308,28 +454,6 @@ introLoop(int button, int select, unsigned long timer) {
   digitalWrite(button, LOW);
 
   menuToGame();
-}
-
-/*
-  * Function performs opening the Teachy TV
-  * and then waiting inside the TV screen for a specified amount of time
-  * Assumes that the TV is registered key item
-*/
-void 
-teachyTV(unsigned long timer) {
-  unsigned long startTimer = millis();
-  openPin(SELECT_PRESS);
-  waitMicroseconds(MS_UL(1200));
-  unsigned long endTimer = millis();
-  unsigned long waitTime = timer - (endTimer - startTimer);
-
-  if (waitTime < 0) 
-    return;
-    
-  Serial.println(waitTime);
-  delay(waitTime);
-  openPin(B_PRESS);
-  waitMicroseconds(MS_UL(1000));
 }
 
 /*
@@ -378,7 +502,7 @@ frlgLoop(unsigned long *seq) {
   * Reboots the console to reset the seed and start again
 */
 void
-seedChecker(unsigned long *seq) {
+seedCheckerWithGrabACE(unsigned long *seq) {
   Serial.println(F("Rebooting console.."));
   getToDSMenuFromReboot();
   Serial.println(F("Console rebooted..."));
@@ -390,6 +514,39 @@ seedChecker(unsigned long *seq) {
   waitMilliseconds(500);
 
   checkTrainerCard();
+}
 
-  waitMilliseconds(10000);
+/*
+  * This assumes we are using the special save file that
+  * Prints out the initial seed when player speaks with
+  * Rival's sister. This simply reboots, performs the timer sequence,
+  * Then starts the conversation by pressing A
+*/
+void
+seedCheckerWithCustomSave(unsigned long *seq) {
+  Serial.println(F("Rebooting console.."));
+  getToDSMenuFromReboot();
+  Serial.println(F("Console rebooted..."));
+  loopTimer = loopTimer ? 0 : loopTimer;
+
+  // Button, Select, Intro Timer
+  introLoop(seq[5], seq[1], seq[2]);
+  waitMilliseconds(1000);
+  
+  // Audio Settings
+  if (seq[3] != CurrentSettings.audio) {
+    openSettings();
+    waitMilliseconds(1800);
+    switchAudioMode();
+    waitMilliseconds(1000);
+  }
+  // Shoulder button settings
+  if (seq[4] != CurrentSettings.shoulder) {
+    openSettings();
+    waitMilliseconds(1800);
+    switchButtonMode(seq[4]);
+    waitMilliseconds(1000);
+  }
+  
+  openPin(A_PRESS);
 }

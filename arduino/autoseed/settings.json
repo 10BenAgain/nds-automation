@@ -1,0 +1,10 @@
+{
+  "port": "COM3",
+  "rate": 9600,
+  "reboot_time": 30000,
+  "max_storage": 2000,
+  "start": 35000,
+  "end": 75000,
+  "start_point": 35000,
+  "button": 13
+}

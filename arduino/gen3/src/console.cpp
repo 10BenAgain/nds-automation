@@ -1,24 +1,28 @@
 #include "console.h"
 
-void waitMicroseconds(unsigned long duration) {
+void 
+waitMicroseconds(unsigned long duration) {
   unsigned long start = micros();
   while ((micros() - start) < duration) {
   }
 }
 
-void waitMilliseconds(unsigned long duration) {
+void 
+waitMilliseconds(unsigned long duration) {
   unsigned long start = millis();
   while ((millis() - start) < duration) {
   }
 }
 
-void openPin(unsigned int pin) {
+void 
+openPin(unsigned int pin) {
   digitalWrite(pin, HIGH);
   waitMicroseconds(MS_UL(59));
   digitalWrite(pin, LOW);
 }
 
-void softResetGameNDS() {
+void 
+softResetGameNDS() {
   unsigned int RESET[4] = {A_PRESS, B_PRESS, SELECT_PRESS, START_PRESS};
   for (int i = 0; i < 4; i++) {
     digitalWrite(RESET[i], HIGH);
@@ -31,21 +35,23 @@ void softResetGameNDS() {
     }
 }
 
-void rebootConsole() {
+void 
+rebootConsole() {
   digitalWrite(POWER_PIN, HIGH);
-  waitMicroseconds(MS_UL(1000));
+  waitMilliseconds(2500);
 
   digitalWrite(POWER_PIN, LOW);
-  waitMicroseconds(MS_UL(1000));
+  waitMilliseconds(1000);
   
   digitalWrite(POWER_PIN, HIGH);
-  waitMicroseconds(MS_UL(1000));
+  waitMilliseconds(2500);
 
   digitalWrite(POWER_PIN, LOW);
-  waitMicroseconds(MS_UL(1000));
+  waitMilliseconds(1000);
 }
 
-void processButtonDelay(ButtonDelay * bd, unsigned int steps) {
+void 
+processButtonDelay(ButtonDelay * bd, unsigned int steps) {
   for (int i = 0; i < steps; i++) {
     
     if (bd[i].delay) {

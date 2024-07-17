@@ -4,7 +4,8 @@
 
 #define MAX_STEPS 7
 #define MAX_STEP_LENGTH 8
-#define BAUD_RATE 9600
+
+const unsigned long BAUD_RATE = 9600;
 
 void clearLongArray(unsigned long *pArr, int len);
 void clearCharArray(char *pArr, int len);
@@ -35,7 +36,7 @@ void loop() {
       instructions[stepCount] = atol(stepBlock);
 
       Serial.print(stepCount + 1);
-      Serial.print(F(": "));
+      Serial.print(F(", "));
       Serial.print(F("Step value: "));
       Serial.println(atol(stepBlock));
       
@@ -57,8 +58,12 @@ void loop() {
         emeraldLoop(instructions);
         break;
       case 2:
-        Serial.println(F("FRLG Seed Checker"));
-        seedChecker(instructions);
+        Serial.println(F("FRLG ACE Seed Checker"));
+        seedCheckerWithGrabACE(instructions);
+        break;
+      case 3:                                                                                                                                                                                                                                                                                                                                                     
+        Serial.println(F("FRLG Custom Seed Checker"));
+        seedCheckerWithCustomSave(instructions);
         break;
       default:
         Serial.println(F("Unknown"));
@@ -67,6 +72,7 @@ void loop() {
     clearLongArray(instructions, MAX_STEPS);
     stepCount = 0;
     Serial.println(F("Done."));
+    Serial.flush();
   }
 }
 
