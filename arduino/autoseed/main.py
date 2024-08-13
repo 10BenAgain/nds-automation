@@ -97,13 +97,17 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
 
     logger.info("Beginning seed collection loop...")
     count = 0
-    while storage > 0:
+    while storage:
         count += 1
         logger.info("Record count: %d", count)
         intro = data[2]
         logger.info("Current intro timer: %d", intro)
-        write_to_device(data)
         sec = (intro + constants.reboot_time) / 1000
+        if intro >= ins.get_maximum_timer():
+            logger.critical("Timer exceeded maximum wait time... ending loop")
+            break
+
+        write_to_device(data)
         logger.info("Waiting for seed write: %f seconds", sec)
         time.sleep(sec)
         ins.increment_timer(increment)

@@ -4,6 +4,7 @@ import constants
 
 class SeedCheckerBuilder:
     """Class for creating and editing values for Seed checker instructions for Arduino"""
+
     def __init__(self, timer: int, button: int, audio: int = None, shoulder: int = None):
         self.__mode = 3
         self.__minimum_timer = constants.start
@@ -19,6 +20,9 @@ class SeedCheckerBuilder:
             self.__instruct[3] = 0
         if shoulder is None:
             self.__instruct[4] = 0
+
+    def get_maximum_timer(self) -> int:
+        return self.__maximum_timer
 
     def _check_values(self) -> bool:
         """Internal method for checking instruction bounds"""
