@@ -103,7 +103,7 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
         intro = data[2]
         logger.info("Current intro timer: %d", intro)
         sec = (intro + constants.reboot_time) / 1000
-        if intro >= ins.get_maximum_timer():
+        if intro > ins.get_maximum_timer():
             logger.critical("Timer exceeded maximum wait time... ending loop")
             break
 
