@@ -83,7 +83,7 @@ class SeedCheckerBuilder:
         tmp = self.__instruct[2]
         total = timer + tmp
 
-        if total > self.__maximum_timer:
+        if total + timer > self.__maximum_timer:
             return
 
         self.__instruct[2] = total
