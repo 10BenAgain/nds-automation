@@ -549,4 +549,11 @@ seedCheckerWithCustomSave(unsigned long *seq) {
   }
   
   openPin(A_PRESS);
+  waitMilliseconds(800);
+  openPin(B_PRESS);
+  waitMicroseconds(500);
+
+  digitalWrite(DOWN_PRESS, HIGH);
+  waitMilliseconds(1200);
+  digitalWrite(DOWN_PRESS, LOW);
 }
