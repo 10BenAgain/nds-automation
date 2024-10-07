@@ -79,8 +79,8 @@ class SeedCheckerBuilder:
         """Increment the timer value by specified amount"""
         if timer < 0:
             return
-        
         self.__instruct[2] += timer
+
 
     def return_instructions(self) -> list[int]:
         """Checks if instructions meet requirements then returns them.
