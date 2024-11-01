@@ -88,7 +88,7 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
     logger.info("Storage set to %d seeds", storage)
 
     if increment is None:
-        increment = 8
+        increment = constants.increment
     logger.info("Incrementing intro timer by %d", increment)
 
     if check_send_data(data):
@@ -117,7 +117,11 @@ def perform_seed_loop(ins: instructor.SeedCheckerBuilder, increment=None, storag
 def main() -> None:
     """Gets the settings, creates a new instructor object and starts the loop"""
     settings = get_timer_button_settings()
-    ins = instructor.SeedCheckerBuilder(timer=settings[0], button=settings[1])
+    ins = instructor.SeedCheckerBuilder(
+        timer=settings[0], 
+        button=settings[1], 
+    )
+
     perform_seed_loop(ins)
 
 

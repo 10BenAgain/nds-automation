@@ -9,6 +9,8 @@ with open("settings.json", encoding='utf-8') as s:
     reboot_time = settings["reboot_time"]
     port = settings["port"]
     rate = settings["rate"]
+    mode = settings["mode"]
+    increment = settings["increment"]
 
 instruct_modes: dict[str, int] = {
     "RLG RNG": 0,

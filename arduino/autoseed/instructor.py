@@ -6,7 +6,7 @@ class SeedCheckerBuilder:
     """Class for creating and editing values for Seed checker instructions for Arduino"""
 
     def __init__(self, timer: int, button: int, audio: int = None, shoulder: int = None):
-        self.__mode = 3
+        self.__mode = constants.mode
         self.__minimum_timer = constants.start
         self.__maximum_timer = constants.end
         self.__current_settings = [0, 0]

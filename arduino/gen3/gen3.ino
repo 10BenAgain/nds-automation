@@ -65,6 +65,14 @@ void loop() {
         Serial.println(F("FRLG Custom Seed Checker"));
         seedCheckerWithCustomSave(instructions);
         break;
+      case 4:
+        Serial.println(F("FRLG Custom Seed Checker for Startup R"));
+        seedCheckerWithCustomSaveStartup_R(instructions);
+        break;
+      case 5:
+        Serial.println(F("FRLG Custom Seed Checker for Startup L"));
+        seedCheckerWithCustomSaveStartup_L(instructions);
+        break;
       default:
         Serial.println(F("Unknown"));
         break;

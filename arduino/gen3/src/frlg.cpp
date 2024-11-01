@@ -453,6 +453,11 @@ introLoop(int button, int select, unsigned long timer) {
   waitMicroseconds(MS_UL(WAIT_FOR_SAV_MENU));
   digitalWrite(button, LOW);
 
+  if (select) {
+    digitalWrite(SELECT_PRESS, LOW);
+    Serial.println(F("Releaseing select..."));
+  }
+
   menuToGame();
 }
 
@@ -548,6 +553,116 @@ seedCheckerWithCustomSave(unsigned long *seq) {
     waitMilliseconds(1000);
   }
   
+  openPin(A_PRESS);
+  waitMilliseconds(800);
+  openPin(B_PRESS);
+  waitMicroseconds(500);
+
+  digitalWrite(DOWN_PRESS, HIGH);
+  waitMilliseconds(1200);
+  digitalWrite(DOWN_PRESS, LOW);
+}
+
+
+/* This is so lazy but I dont care. It will all be refactored soon*/
+void 
+introLoop_R(int button, int select, unsigned long timer) {
+  if (select) {
+    digitalWrite(SELECT_PRESS, HIGH);
+    Serial.println(F("Holding select..."));
+  }
+  loopTimer = micros();
+
+  // Hold down R during the whole sequence 
+  digitalWrite(R_PRESS, HIGH);
+
+  Serial.println(F("Waiting thru intro timer..."));
+
+  openPin(A_PRESS);
+  waitMicroseconds(MS_UL(timer));
+
+  Serial.println(F("Intro complete..."));
+  digitalWrite(button, HIGH);
+  waitMicroseconds(MS_UL(WAIT_FOR_SAV_MENU));
+  digitalWrite(button, LOW);
+
+  digitalWrite(R_PRESS, LOW);
+
+  if (select) {
+    digitalWrite(SELECT_PRESS, LOW);
+    Serial.println(F("Releaseing select..."));
+  }
+
+  menuToGame();
+}
+
+void 
+introLoop_L(int button, int select, unsigned long timer) {
+  if (select) {
+    digitalWrite(SELECT_PRESS, HIGH);
+    Serial.println(F("Holding select..."));
+  }
+  loopTimer = micros();
+
+  // Hold down R during the whole sequence 
+  digitalWrite(L_PRESS, HIGH);
+
+  Serial.println(F("Waiting thru intro timer..."));
+
+  openPin(A_PRESS);
+  waitMicroseconds(MS_UL(timer));
+
+  Serial.println(F("Intro complete..."));
+  digitalWrite(button, HIGH);
+  waitMicroseconds(MS_UL(WAIT_FOR_SAV_MENU));
+  digitalWrite(button, LOW);
+
+  digitalWrite(L_PRESS, LOW);
+
+  if (select) {
+    digitalWrite(SELECT_PRESS, LOW);
+    Serial.println(F("Releaseing select..."));
+  }
+
+  menuToGame();
+}
+
+void
+seedCheckerWithCustomSaveStartup_R(unsinged long *seq) {
+  Serial.println(F("Rebooting console.."));
+  getToDSMenuFromReboot();
+  Serial.println(F("Console rebooted..."));
+  loopTimer = loopTimer ? 0 : loopTimer;
+
+  introLoop_R(seq[5], seq[1], seq[2]);
+  
+  // Button, Select, Intro Timer
+  introLoop(seq[5], seq[1], seq[2]);
+  waitMilliseconds(1000);
+
+  openPin(A_PRESS);
+  waitMilliseconds(800);
+  openPin(B_PRESS);
+  waitMicroseconds(500);
+
+  digitalWrite(DOWN_PRESS, HIGH);
+  waitMilliseconds(1200);
+  digitalWrite(DOWN_PRESS, LOW);
+}
+
+void
+seedCheckerWithCustomSaveStartup_L(unsinged long *seq) {
+  Serial.println(F("Rebooting console.."));
+  getToDSMenuFromReboot();
+  Serial.println(F("Console rebooted..."));
+  loopTimer = loopTimer ? 0 : loopTimer;
+
+  introLoop_L(seq[5], seq[1], seq[2]);
+  
+  // Button, Select, Intro Timer
+  introLoop(seq[5], seq[1], seq[2]);
+  waitMilliseconds(1000);
+
   openPin(A_PRESS);
   waitMilliseconds(800);
   openPin(B_PRESS);
