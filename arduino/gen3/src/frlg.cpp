@@ -628,7 +628,7 @@ introLoop_L(int button, int select, unsigned long timer) {
 }
 
 void
-seedCheckerWithCustomSaveStartup_R(unsinged long *seq) {
+seedCheckerWithCustomSaveStartup_R(unsigned long *seq) {
   Serial.println(F("Rebooting console.."));
   getToDSMenuFromReboot();
   Serial.println(F("Console rebooted..."));
@@ -651,7 +651,7 @@ seedCheckerWithCustomSaveStartup_R(unsinged long *seq) {
 }
 
 void
-seedCheckerWithCustomSaveStartup_L(unsinged long *seq) {
+seedCheckerWithCustomSaveStartup_L(unsigned long *seq) {
   Serial.println(F("Rebooting console.."));
   getToDSMenuFromReboot();
   Serial.println(F("Console rebooted..."));
